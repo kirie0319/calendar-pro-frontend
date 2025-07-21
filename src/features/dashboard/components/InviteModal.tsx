@@ -30,15 +30,33 @@ export default function InviteModal({ isOpen, onOpenChange, currentGroup }: Invi
     try {
       const response = await apiClient.getGroupDetail(currentGroup.id)
       
+      console.log("🔍 API Response Status:", response.status)
+      console.log("🔍 API Response Data:", response.data)
+      
       if (response.status === 200 && response.data) {
         const groupDetail = response.data as GroupDetail
-        // バックエンドのベースURLと招待コードから招待URLを生成
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-        const inviteUrl = `${baseUrl}/groups/join/${groupDetail.invite_code}`
-        setInviteUrl(inviteUrl)
-        console.log("✅ 招待URL取得成功:", inviteUrl)
+        console.log("🔍 Group Detail Object:", groupDetail)
+        console.log("🔍 Available properties:", Object.keys(groupDetail))
+        console.log("🔍 invite_url value:", groupDetail.invite_url)
+        console.log("🔍 invite_code value:", groupDetail.invite_code)
+        
+        // バックエンドから直接招待URLを取得
+        if (groupDetail.invite_url) {
+          setInviteUrl(groupDetail.invite_url)
+          console.log("✅ 招待URL取得成功:", groupDetail.invite_url)
+        } else {
+          // invite_urlがない場合の一時的なフォールバック
+          console.warn("⚠️ invite_urlがレスポンスにありません。フォールバックを使用します。")
+          if (groupDetail.invite_code) {
+            const fallbackUrl = `${window.location.origin}/groups/join/${groupDetail.invite_code}`
+            setInviteUrl(fallbackUrl)
+            console.log("🔄 フォールバック招待URL:", fallbackUrl)
+          } else {
+            throw new Error("招待URLも招待コードも取得できませんでした")
+          }
+        }
       } else {
-        throw new Error("招待URLの取得に失敗しました")
+        throw new Error(`APIエラー: Status ${response.status}, Error: ${response.error}`)
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "招待URLの取得に失敗しました"

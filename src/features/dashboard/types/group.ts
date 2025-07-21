@@ -17,6 +17,7 @@ export interface Group {
 export interface GroupDetail extends Group {
   members: GroupMember[]
   creator?: GroupMember
+  invite_url?: string  // 招待URL
 }
 
 export interface GroupInvitation {
