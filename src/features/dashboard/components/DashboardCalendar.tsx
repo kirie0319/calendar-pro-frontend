@@ -1,7 +1,7 @@
 import * as React from "react"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, startOfWeek, endOfWeek, setHours, addMinutes, startOfDay, addDays } from "date-fns"
 import { Clock } from "lucide-react"
-import { cn, formatUtcToJstTime, formatUtcTimeToJstTime } from "@/lib/utils"
+import { cn, formatUtcTimeToJstTime } from "@/lib/utils"
 import { useDashboardStore } from "@/features/dashboard/store/dashboardStore"
 import BookingConfirmDialog from "./BookingConfirmDialog"
 
